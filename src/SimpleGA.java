@@ -5,6 +5,11 @@ public class SimpleGA {
     Individual fittest;
     Individual secondFittest;
     int generationCount = 0;
+    String[] itemArr = new String[]{"Saco de Dormir", "Corda", "Canivete", "Tocha", "Garrafa", "Comida"};
+    int comparator = 0;
+    int index = 0;
+    int[] comb = new int[6];
+    int initialGenFittest = 0;
 
     public static void main(String[] args) {
 
@@ -19,9 +24,10 @@ public class SimpleGA {
         demo.population.calculateFitness();
 
         System.out.println("Generation: " + demo.generationCount + " Fittest: " + demo.population.fittest);
+        demo.initialGenFittest = demo.population.fittest;
 
         //While population gets an individual with maximum fitness
-        while (demo.population.fittest < 5) {
+        while (demo.generationCount < 30) {
             ++demo.generationCount;
 
             //Do selection
@@ -35,20 +41,36 @@ public class SimpleGA {
                 demo.mutation();
             }
 
-            //Add fittest offspring to population
+            //Add the fittest offspring to population
             demo.addFittestOffspring();
 
             //Calculate new fitness value
             demo.population.calculateFitness();
 
             System.out.println("Generation: " + demo.generationCount + " Fittest: " + demo.population.fittest);
+
+            //Gets the fittest offspring
+            if (demo.population.fittest > demo.comparator) {
+                demo.comparator = demo.population.fittest;
+                demo.index = demo.generationCount;
+                for (int i = 0; i < 6; i++) {
+                    demo.comb[i] = demo.population.getFittest().genes[i];
+                }
+            }
         }
 
-        System.out.println("\nSolution found in generation " + demo.generationCount);
-        System.out.println("Fitness: "+demo.population.getFittest().fitness);
-        System.out.print("Genes: ");
-        for (int i = 0; i < 5; i++) {
-            System.out.print(demo.population.getFittest().genes[i]);
+        //compares initial generation with best offspring
+        if (demo.comparator < demo.initialGenFittest) {
+            demo.comparator = demo.initialGenFittest;
+            demo.index = 0;
+        }
+
+        //prints the best solution found
+        System.out.println("\nBest solution was found in generation " + demo.index);
+        System.out.println("Fitness: " + demo.comparator);
+        System.out.println("Genes: ");
+        for (int i = 0; i < 6; i++) {
+            System.out.println(demo.itemArr[i] + " = " + demo.comb[i]);
         }
 
         System.out.println("");
